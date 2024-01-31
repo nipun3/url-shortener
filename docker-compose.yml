@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./apps/api-gateway/Dockerfile
+    ports:
+      - 8000:3000
+    container_name: api-gateway-container
+
+  shortening-service:
+    build:
+      context: .
+      dockerfile: ./apps/shortening-service/Dockerfile
+    ports:
+      - 5000:5000
+    container_name: shortening-service-container

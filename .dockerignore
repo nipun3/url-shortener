@@ -1,0 +1,10 @@
+.git
+node_modules
+**/node_modules
+dist
+bin
+README.md
+
+# test files
+**/*.spec.{js,ts,tsx}
+**/*.e2e.{js,ts,tsx}
