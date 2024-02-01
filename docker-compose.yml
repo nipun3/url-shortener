@@ -9,10 +9,10 @@ services:
       - 8000:3000
     container_name: api-gateway-container
 
-  shortening-service:
+  url:
     build:
       context: .
-      dockerfile: ./apps/shortening-service/Dockerfile
+      dockerfile: ./apps/url/Dockerfile
     ports:
       - 5000:5000
-    container_name: shortening-service-container
+    container_name: url-container

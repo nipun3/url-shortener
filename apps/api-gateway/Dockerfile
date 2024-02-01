@@ -6,7 +6,7 @@ COPY package*.json tsconfig.json .
 
 COPY ./apps/api-gateway/src .
 
-COPY ./apps/shortening-service/src/proto/shortening-service.proto ./shortening-service/proto/
+COPY ./apps/url/src/proto/url.proto ./url/proto/
 
 COPY ./libs ./libs
 

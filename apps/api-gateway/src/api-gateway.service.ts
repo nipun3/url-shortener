@@ -1,19 +1,19 @@
-import { Hero, ShorteningService } from '@app/proto';
+import { Hero, UrlService } from '@app/proto';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 
 
 @Injectable()
 export class ApiGatewayService implements OnModuleInit {
-  private shorteningService: any;
+  private urlService: UrlService;
 
   constructor(@Inject('LINK_PACKAGE') private client: ClientGrpc) {}
 
   onModuleInit() {
-    this.shorteningService = this.client.getService<ShorteningService>('ShorteningService');
+    this.urlService = this.client.getService<UrlService>('UrlService');
   }
 
   getHello(): Promise<Hero> {
-    return this.shorteningService.findOne({ id: 1 });
+    return this.urlService.findOne({ id: 1 });
   }
 }

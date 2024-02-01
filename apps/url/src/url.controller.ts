@@ -4,8 +4,8 @@ import { GrpcMethod } from '@nestjs/microservices';
 
 
 @Controller()
-export class ShorteningService {
-  @GrpcMethod('ShorteningService', 'FindOne')
+export class UrlService {
+  @GrpcMethod('UrlService', 'FindOne')
 
   findOne(data: HeroById): Hero {
     const items = [

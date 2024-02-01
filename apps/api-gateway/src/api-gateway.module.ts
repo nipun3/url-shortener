@@ -13,9 +13,9 @@ console.log('process.env.HOST_IP', process.env.HOST_IP);
         name: 'LINK_PACKAGE',
         transport: Transport.GRPC,
         options: {
-          url: `shortening-service-container:5000`,
+          url: `url-container:5000`,
           package: 'link',
-          protoPath: join(__dirname, '../shortening-service/proto/shortening-service.proto')
+          protoPath: join(__dirname, '../url/proto/url.proto')
         },
       },
     ]),

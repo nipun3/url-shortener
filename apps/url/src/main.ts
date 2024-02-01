@@ -1,17 +1,17 @@
 import { NestFactory } from '@nestjs/core';
-import { ShorteningServiceModule } from './shortening-service.module';
+import { UrlModule } from './url.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    ShorteningServiceModule,
+    UrlModule,
     {
       transport: Transport.GRPC,
       options: {
-        url: `shortening-service-container:5000`,
+        url: `url-container:5000`,
         package: 'link',
-        protoPath: join(__dirname, '/proto/shortening-service.proto')
+        protoPath: join(__dirname, '/proto/url.proto')
       }
 
     },

@@ -7,6 +7,6 @@ export interface HeroById {
   id: number;
 }
 
-export interface ShorteningService {
+export interface UrlService {
   findOne(request: HeroById): Promise<Hero>;
 }

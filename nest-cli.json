@@ -27,17 +27,17 @@
         "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
       }
     },
-    "shortening-service": {
+    "url": {
       "type": "application",
-      "root": "apps/shortening-service",
+      "root": "apps/url",
       "entryFile": "main",
-      "sourceRoot": "apps/shortening-service/src",
+      "sourceRoot": "apps/url/src",
       "compilerOptions": {
         "assets": [
           "**/*.proto"
         ],
         "watchAssets": true,
-        "tsConfigPath": "apps/shortening-service/tsconfig.app.json"
+        "tsConfigPath": "apps/url/tsconfig.app.json"
       }
     },
     "proto": {
