@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
-import { ApiGatewayController } from './api-gateway.controller';
-import { ApiGatewayService } from './api-gateway.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 
-console.log('process.env.HOST_IP', process.env.HOST_IP);
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+
+import { ApiGatewayController } from './api-gateway.controller';
+import { ApiGatewayService } from './api-gateway.service';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ console.log('process.env.HOST_IP', process.env.HOST_IP);
         },
       },
     ]),
+    ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [ApiGatewayController],
   providers: [ApiGatewayService],

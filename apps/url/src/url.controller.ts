@@ -1,13 +1,22 @@
-import { Hero, HeroById, RegisterUserDetails, RegisterUserResponse, ShortenUrlResponse, UrlDetails } from '@app/proto';
 import { Controller, UnauthorizedException } from '@nestjs/common';
-import { v4 } from 'uuid';
 import { GrpcMethod, RpcException } from '@nestjs/microservices';
 import { nanoid } from 'nanoid';
+import { v4 } from 'uuid';
+
+import {
+  Hero,
+  HeroById,
+  RegisterUserDetails,
+  RegisterUserResponse,
+  ShortenUrlResponse,
+  UrlDetails,
+} from '@app/proto';
+
 import { PrismaService } from './prisma.service';
 
 @Controller()
 export class UrlController {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   @GrpcMethod('UrlService', 'FindOne')
   findOne(data: HeroById): Hero {
@@ -19,15 +28,17 @@ export class UrlController {
   }
 
   @GrpcMethod('UrlService', 'RegisterUser')
-  async registerUser(userDetails: RegisterUserDetails): Promise<RegisterUserResponse> {
+  async registerUser(
+    userDetails: RegisterUserDetails,
+  ): Promise<RegisterUserResponse> {
     // TODO: check if user exsits already, if it does then return the api key from db
 
-    // TODO: if user doesn't exist then, generate a api key store it in db 
+    // TODO: if user doesn't exist then, generate a api key store it in db
 
     return {
       api_key: v4(),
       email: userDetails.email,
-   }
+    };
   }
 
   @GrpcMethod('UrlService', 'ShortenUrl')
@@ -46,13 +57,13 @@ export class UrlController {
           },
         },
       },
-    })
-    const allUsers = await this.prisma.user.findMany()
+    });
+    const allUsers = await this.prisma.user.findMany();
     console.log('ALL USERS', allUsers);
 
     return {
       originalUrl: urlDetails.url,
       shortenedUrl: `http://localhost:8000/${shorteningKey}`,
-    }
+    };
   }
 }

@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { UrlController } from './url.controller';
-import { RedirectController } from './redirect.controller';
+
 import { PrismaService } from './prisma.service';
+import { RedirectController } from './redirect.controller';
+import { UrlController } from './url.controller';
 
 @Module({
   imports: [],

@@ -1,7 +1,14 @@
-import { Hero, RegisterUserDetails, UrlService, RegisterUserResponse, UrlDetails, ShortenUrlResponse } from '@app/proto';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 
+import {
+  Hero,
+  RegisterUserDetails,
+  UrlService,
+  RegisterUserResponse,
+  UrlDetails,
+  ShortenUrlResponse,
+} from '@app/proto';
 
 @Injectable()
 export class ApiGatewayService implements OnModuleInit {
@@ -17,7 +24,9 @@ export class ApiGatewayService implements OnModuleInit {
     return this.urlService.findOne({ id: 1 });
   }
 
-  async registerUser(userDetails: RegisterUserDetails): Promise<RegisterUserResponse> {
+  async registerUser(
+    userDetails: RegisterUserDetails,
+  ): Promise<RegisterUserResponse> {
     return this.urlService.registerUser(userDetails);
   }
 

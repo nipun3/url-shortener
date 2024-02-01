@@ -40,6 +40,8 @@ services:
       - 5000:5000
       - 8001:3000
     container_name: url-container
+    env_file:
+      - .env
     environment:
       - "DATABASE_URL=mongodb://host.docker.internal:27017/url?replicaSet=rs0"
     depends_on:
