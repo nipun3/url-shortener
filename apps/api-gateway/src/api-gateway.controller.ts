@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RpcException } from '@nestjs/microservices';
 
@@ -9,6 +9,8 @@ import {
   ShortenUrlResponse,
 } from './api-gateway.dto';
 import { ApiGatewayService } from './api-gateway.service';
+import { UserThrottlerGuard } from './api-key-throttler-guard';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('url-shortener')
 export class ApiGatewayController {
@@ -29,11 +31,12 @@ export class ApiGatewayController {
     return this.apiGatewayService.registerUser(dto);
   }
 
+  @UseGuards(UserThrottlerGuard)
   @Post('shortenUrl')
   async shortenUrl(@Body() dto: ShortenUrlDTO): Promise<ShortenUrlResponse> {
     try {
-      const testValue = this.configService.get('test');
-      console.log('%capi-gateway.controller.ts line:36 testValue', 'color: #007acc;', testValue);
+      // const testValue = this.configService.get('test');
+      // console.log('%capi-gateway.controller.ts line:36 testValue', 'color: #007acc;', testValue);
 
       return this.apiGatewayService.shortenUrl(dto);
     } catch (error) {
