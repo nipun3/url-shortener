@@ -4,6 +4,8 @@ package link;
 
 service UrlService {
     rpc FindOne(HeroById) returns (Hero) {}
+    rpc RegisterUser(RegisterUserDetails) returns (RegisterUserResponse) {}
+    rpc ShortenUrl(UrlDetails) returns (ShortenUrlResponse) {}
 }
 
 message HeroById {
@@ -13,4 +15,25 @@ message HeroById {
 message Hero {
     int32 id = 1;
     string name = 2;
+}
+
+message RegisterUserDetails {
+    string name = 1;
+    string email = 2;
+}
+
+message RegisterUserResponse {
+    string email = 1;
+    string api_key = 2;
+}
+
+message UrlDetails {
+    string url = 1;
+    string api_key = 2;
+    string email = 3;
+}
+
+message ShortenUrlResponse {
+    string originalUrl = 1;
+    string shortenedUrl = 2;
 }

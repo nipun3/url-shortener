@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { UrlService } from './url.controller';
+import { UrlController } from './url.controller';
+import { RedirectController } from './redirect.controller';
 
 @Module({
   imports: [],
-  controllers: [UrlService],
+  controllers: [UrlController, RedirectController],
   providers: [],
 })
 export class UrlModule {}

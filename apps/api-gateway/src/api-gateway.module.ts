@@ -15,7 +15,10 @@ console.log('process.env.HOST_IP', process.env.HOST_IP);
         options: {
           url: `url-container:5000`,
           package: 'link',
-          protoPath: join(__dirname, '../url/proto/url.proto')
+          protoPath: join(__dirname, '../url/proto/url.proto'),
+          loader: {
+            keepCase: true,
+          },
         },
       },
     ]),

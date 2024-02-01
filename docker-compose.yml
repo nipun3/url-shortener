@@ -15,4 +15,5 @@ services:
       dockerfile: ./apps/url/Dockerfile
     ports:
       - 5000:5000
+      - 8001:3000
     container_name: url-container
