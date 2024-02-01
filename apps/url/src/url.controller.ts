@@ -3,9 +3,12 @@ import { Controller, UnauthorizedException } from '@nestjs/common';
 import { v4 } from 'uuid';
 import { GrpcMethod, RpcException } from '@nestjs/microservices';
 import { nanoid } from 'nanoid';
+import { PrismaService } from './prisma.service';
 
 @Controller()
 export class UrlController {
+  constructor(private prisma: PrismaService) { }
+
   @GrpcMethod('UrlService', 'FindOne')
   findOne(data: HeroById): Hero {
     const items = [
@@ -31,7 +34,21 @@ export class UrlController {
   async shortenUrl(urlDetails: UrlDetails): Promise<ShortenUrlResponse> {
     // TODO: check if api_key is valid for the user, if not throw error
     const shorteningKey = nanoid(8);
-
+    await this.prisma.user.create({
+      data: {
+        name: 'Rich',
+        email: 'hello@prisma.com',
+        posts: {
+          create: {
+            title: 'My first post',
+            body: 'Lots of really interesting stuff',
+            slug: 'my-first-post',
+          },
+        },
+      },
+    })
+    const allUsers = await this.prisma.user.findMany()
+    console.log('ALL USERS', allUsers);
 
     return {
       originalUrl: urlDetails.url,

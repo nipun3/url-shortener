@@ -1,6 +1,25 @@
 version: '3'
 
 services:
+  mongo:
+      image: mongo:7.0
+      container_name: mongo-container
+      command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27017"]
+      ports:
+        - 27017:27017
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+      healthcheck:
+        test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'host.docker.internal:27017'}]}) }" | mongosh --port 27017 --quiet
+        interval: 5s
+        timeout: 30s
+        start_period: 0s
+        start_interval: 1s
+        retries: 30
+      volumes:
+        - "mongo_data:/data/db"
+        - "mongo_config:/data/configdb"
+
   api-gateway:
     build:
       context: .
@@ -8,6 +27,10 @@ services:
     ports:
       - 8000:3000
     container_name: api-gateway-container
+    env_file:
+      - .env
+    depends_on:
+      - mongo
 
   url:
     build:
@@ -17,3 +40,11 @@ services:
       - 5000:5000
       - 8001:3000
     container_name: url-container
+    environment:
+      - "DATABASE_URL=mongodb://host.docker.internal:27017/url?replicaSet=rs0"
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:
+  mongo_config:
