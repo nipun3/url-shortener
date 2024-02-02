@@ -20,12 +20,16 @@ services:
       volumes:
         - "mongo_data:/data/db"
         - "mongo_config:/data/configdb"
+      # profiles:
+      #   - infra
 
   redis:
       image: redis:6.2-alpine
       restart: always
       ports:
         - '6379:6379'
+      # profiles:
+      #   - infra
 
   api-gateway:
     build:
