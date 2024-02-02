@@ -1,11 +1,11 @@
-import { Controller, UnauthorizedException } from '@nestjs/common';
-import { GrpcMethod, RpcException } from '@nestjs/microservices';
+import { Controller } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { GrpcMethod } from '@nestjs/microservices';
 import { nanoid } from 'nanoid';
 import { v4 } from 'uuid';
 
+import { log } from '@app/logger';
 import {
-  Hero,
-  HeroById,
   RegisterUserDetails,
   RegisterUserResponse,
   ShortenUrlResponse,
@@ -14,56 +14,94 @@ import {
 
 import { PrismaService } from './prisma.service';
 
+// TODO: move relevant code to url service
 @Controller()
 export class UrlController {
-  constructor(private prisma: PrismaService) {}
-
-  @GrpcMethod('UrlService', 'FindOne')
-  findOne(data: HeroById): Hero {
-    const items = [
-      { id: 1, name: 'John' },
-      { id: 2, name: 'Doe' },
-    ];
-    return items.find(({ id }) => id === data.id);
-  }
+  constructor(
+    private prisma: PrismaService,
+    private configService: ConfigService,
+  ) {}
 
   @GrpcMethod('UrlService', 'RegisterUser')
   async registerUser(
     userDetails: RegisterUserDetails,
   ): Promise<RegisterUserResponse> {
-    // TODO: check if user exsits already, if it does then return the api key from db
+    const { email, name } = userDetails;
+    try {
+      const user = await this.prisma.user.findFirst({
+        select: { apiKey: true },
+        where: { email },
+      });
 
-    // TODO: if user doesn't exist then, generate a api key store it in db
+      if (user) return { apiKey: user.apiKey, email };
 
-    return {
-      api_key: v4(),
-      email: userDetails.email,
-    };
+      const apiKey = v4();
+      await this.prisma.user.create({
+        data: {
+          name,
+          email,
+          apiKey,
+        },
+      });
+
+      return {
+        apiKey,
+        email,
+      };
+    } catch (error) {
+      log('urlController#registerUser unkwown error occurred', error);
+    }
   }
 
   @GrpcMethod('UrlService', 'ShortenUrl')
   async shortenUrl(urlDetails: UrlDetails): Promise<ShortenUrlResponse> {
-    // TODO: check if api_key is valid for the user, if not throw error
-    const shorteningKey = nanoid(8);
-    await this.prisma.user.create({
-      data: {
-        name: 'Rich',
-        email: 'hello@prisma.com',
-        posts: {
-          create: {
-            title: 'My first post',
-            body: 'Lots of really interesting stuff',
-            slug: 'my-first-post',
-          },
-        },
-      },
-    });
-    const allUsers = await this.prisma.user.findMany();
-    console.log('ALL USERS', allUsers);
+    try {
+      const { apiKey, url: originalUrl } = urlDetails;
+      const baseUrl = this.configService.get('URL_SERVICE_HTTP_HOST');
 
-    return {
-      originalUrl: urlDetails.url,
-      shortenedUrl: `http://localhost:8000/${shorteningKey}`,
-    };
+      const [user, link] = await Promise.all([
+        this.prisma.user.findFirst({
+          where: { apiKey },
+          select: { id: true },
+        }),
+        this.prisma.link.findFirst({
+          where: { originalUrl },
+          select: { shortUrlCode: true },
+        }),
+      ]);
+
+      if (!user) {
+        return {
+          originalUrl: null,
+          shortenedUrl: null,
+          error: 'Unregistered user!',
+        };
+      }
+
+      if (link) {
+        return {
+          originalUrl,
+          shortenedUrl: `${baseUrl}/${link.shortUrlCode}`,
+        };
+      }
+
+      const shortUrlCode = nanoid(10);
+      await this.prisma.link.create({
+        data: {
+          originalUrl,
+          shortUrlCode,
+          apiKey,
+          // TODO: handle expiry
+          expiryAt: new Date(),
+        },
+      });
+
+      return {
+        originalUrl,
+        shortenedUrl: `${baseUrl}/${shortUrlCode}`,
+      };
+    } catch (error) {
+      log('urlController#shortenUrl unkwown error occurred', error);
+    }
   }
 }

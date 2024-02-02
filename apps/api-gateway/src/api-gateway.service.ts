@@ -2,7 +2,6 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 
 import {
-  Hero,
   RegisterUserDetails,
   UrlService,
   RegisterUserResponse,
@@ -10,6 +9,7 @@ import {
   ShortenUrlResponse,
 } from '@app/proto';
 
+// TODO: add doc strings everywhere
 @Injectable()
 export class ApiGatewayService implements OnModuleInit {
   private urlService: UrlService;
@@ -18,10 +18,6 @@ export class ApiGatewayService implements OnModuleInit {
 
   onModuleInit() {
     this.urlService = this.client.getService<UrlService>('UrlService');
-  }
-
-  getHello(): Promise<Hero> {
-    return this.urlService.findOne({ id: 1 });
   }
 
   async registerUser(

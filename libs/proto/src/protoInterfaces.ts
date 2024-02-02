@@ -1,12 +1,3 @@
-export interface Hero {
-  id: number;
-  name: string;
-}
-
-export interface HeroById {
-  id: number;
-}
-
 export interface RegisterUserDetails {
   name: string;
   email: string;
@@ -14,21 +5,20 @@ export interface RegisterUserDetails {
 
 export interface RegisterUserResponse {
   email: string;
-  api_key: string;
+  apiKey: string;
 }
 
 export interface UrlDetails {
   url: string;
-  api_key: string;
-  email: string;
+  apiKey: string;
 }
 export interface ShortenUrlResponse {
   originalUrl: string;
   shortenedUrl: string;
+  error?: string;
 }
 
 export interface UrlService {
-  findOne(request: HeroById): Promise<Hero>;
   registerUser(userDetails: RegisterUserDetails): Promise<RegisterUserResponse>;
   shortenUrl(urlDetails): Promise<ShortenUrlResponse>;
 }

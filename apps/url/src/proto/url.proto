@@ -1,20 +1,10 @@
 syntax = "proto3";
 
-package link;
+package urlService;
 
 service UrlService {
-    rpc FindOne(HeroById) returns (Hero) {}
     rpc RegisterUser(RegisterUserDetails) returns (RegisterUserResponse) {}
     rpc ShortenUrl(UrlDetails) returns (ShortenUrlResponse) {}
-}
-
-message HeroById {
-    int32 id  = 1;
-}
-
-message Hero {
-    int32 id = 1;
-    string name = 2;
 }
 
 message RegisterUserDetails {
@@ -24,16 +14,16 @@ message RegisterUserDetails {
 
 message RegisterUserResponse {
     string email = 1;
-    string api_key = 2;
+    string apiKey = 2;
 }
 
 message UrlDetails {
     string url = 1;
-    string api_key = 2;
-    string email = 3;
+    string apiKey = 2;
 }
 
 message ShortenUrlResponse {
     string originalUrl = 1;
     string shortenedUrl = 2;
+    optional string error = 3;
 }

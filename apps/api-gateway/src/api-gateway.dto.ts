@@ -1,13 +1,4 @@
-import {
-  IsDate,
-  IsIn,
-  IsNotEmpty,
-  IsEmail,
-  IsOptional,
-  IsString,
-  IsUUID,
-  IsUrl,
-} from 'class-validator';
+import { IsNotEmpty, IsEmail, IsUUID, IsUrl } from 'class-validator';
 
 export class RegisterUserDTO {
   @IsNotEmpty()
@@ -19,7 +10,7 @@ export class RegisterUserDTO {
 
 export class RegisterUserResponse {
   email: string;
-  api_key: string;
+  apiKey: string;
 }
 
 export class ShortenUrlDTO {
@@ -29,11 +20,7 @@ export class ShortenUrlDTO {
 
   @IsNotEmpty()
   @IsUUID()
-  api_key: string;
-
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
+  apiKey: string;
 }
 
 export class ShortenUrlResponse {
