@@ -1,40 +1,24 @@
 import { join } from 'path';
 
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule, seconds } from '@nestjs/throttler';
+import { RedisModule } from '@nestjs-modules/ioredis';
+import { ThrottlerStorageRedisService } from 'nestjs-throttler-storage-redis';
 
 import { ApiGatewayController } from './api-gateway.controller';
 import { ApiGatewayService } from './api-gateway.service';
+import { GrpcClientModuleOptions, RedisModuleOptions, ThrottlerModuleOptions } from '@app/module-options';
 
 @Module({
   imports: [
-    ClientsModule.register([
-      {
-        name: 'LINK_PACKAGE',
-        transport: Transport.GRPC,
-        options: {
-          url: `url-container:5000`,
-          package: 'urlService',
-          protoPath: join(__dirname, '../url/proto/url.proto'),
-          loader: {
-            keepCase: true,
-          },
-        },
-      },
-    ]),
-    ThrottlerModule.forRoot([
-      {
-        ttl: 10000,
-        limit: 10,
-      },
-    ]),
+    ClientsModule.registerAsync(GrpcClientModuleOptions(join(__dirname, '../url/proto/url.proto'))),
+    ThrottlerModule.forRootAsync(ThrottlerModuleOptions),
+    RedisModule.forRootAsync(RedisModuleOptions),
     ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [ApiGatewayController],
-  providers: [
-    ApiGatewayService,
-  ],
+  providers: [ApiGatewayService],
 })
 export class ApiGatewayModule {}

@@ -15,7 +15,10 @@ export class RegisterUserResponse {
 
 export class ShortenUrlDTO {
   @IsNotEmpty()
-  @IsUrl({}, { message: 'Invalid url format!' })
+  @IsUrl(
+    { require_protocol: true },
+    { message: 'Invalid url format! Make sure url has a valid protocol.' },
+  )
   url: string;
 
   @IsNotEmpty()

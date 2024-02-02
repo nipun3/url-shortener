@@ -57,6 +57,19 @@
       "compilerOptions": {
         "tsConfigPath": "libs/logger/tsconfig.lib.json"
       }
+    },
+    "module-options": {
+      "type": "library",
+      "root": "libs/module-options",
+      "entryFile": "index",
+      "sourceRoot": "libs/module-options/src",
+      "compilerOptions": {
+        "assets": [
+          "**/*.proto"
+        ],
+        "watchAssets": true,
+        "tsConfigPath": "libs/module-options/tsconfig.lib.json"
+      }
     }
   }
 }

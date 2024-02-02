@@ -16,21 +16,33 @@ services:
         start_period: 0s
         start_interval: 1s
         retries: 30
+      restart: always
       volumes:
         - "mongo_data:/data/db"
         - "mongo_config:/data/configdb"
+
+  redis:
+      image: redis:6.2-alpine
+      restart: always
+      ports:
+        - '6379:6379'
 
   api-gateway:
     build:
       context: .
       dockerfile: ./apps/api-gateway/Dockerfile
     ports:
-      - 8000:3000
+      - 3000:3000
     container_name: api-gateway-container
+    restart: always
     env_file:
       - .env
+    environment:
+      - "REDIS_URL=redis://host.docker.internal:6379"
+      - "GRPC_SERVER_URL=url-container:5000"
     depends_on:
       - mongo
+      - redis
 
   url:
     build:
@@ -38,15 +50,18 @@ services:
       dockerfile: ./apps/url/Dockerfile
     ports:
       - 5000:5000
-      - 8001:3001
+      - 3001:3001
     container_name: url-container
+    restart: always
     env_file:
       - .env
     environment:
-      - "DATABASE_URL=mongodb://host.docker.internal:27017/url?replicaSet=rs0"
-      - "URL_SERVICE_HTTP_HOST=http://localhost:8001"
+      - "MONGO_DB_URL=mongodb://host.docker.internal:27017/url?replicaSet=rs0"
+      - "REDIS_URL=redis://host.docker.internal:6379"
+      - "GRPC_SERVER_URL=url-container:5000"
     depends_on:
       - mongo
+      - redis
 
 volumes:
   mongo_data:

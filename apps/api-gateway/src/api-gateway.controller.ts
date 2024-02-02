@@ -1,4 +1,6 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { InjectRedis } from '@nestjs-modules/ioredis';
+import Redis from 'ioredis';
 
 import {
   RegisterUserDTO,
@@ -11,7 +13,10 @@ import { UserThrottlerGuard } from './api-key-throttler-guard';
 
 @Controller('url-shortener')
 export class ApiGatewayController {
-  constructor(private readonly apiGatewayService: ApiGatewayService) {}
+  constructor(
+    private readonly apiGatewayService: ApiGatewayService,
+    @InjectRedis() private readonly redis: Redis,
+  ) {}
 
   @Post('registerUser')
   async registerUser(
@@ -23,6 +28,7 @@ export class ApiGatewayController {
   @UseGuards(UserThrottlerGuard)
   @Post('shortenUrl')
   async shortenUrl(@Body() dto: ShortenUrlDTO): Promise<ShortenUrlResponse> {
+    await this.redis.set('test', 1);
     return this.apiGatewayService.shortenUrl(dto);
   }
 }

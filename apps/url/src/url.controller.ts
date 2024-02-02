@@ -85,7 +85,13 @@ export class UrlController {
         };
       }
 
-      const shortUrlCode = nanoid(10);
+      /**
+       * At a rate of generation of 1000 short url codes per hr, nanoid(11) will take
+       * ~139 years or 1 Billion ids, in order to have a 1% probability of at least one collision.
+       * src: https://zelark.github.io/nano-id-cc/
+       */
+      const shortUrlCode = nanoid(11);
+
       await this.prisma.link.create({
         data: {
           originalUrl,

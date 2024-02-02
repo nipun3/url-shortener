@@ -29,6 +29,12 @@
       ],
       "@app/logger/*": [
         "libs/logger/src/*"
+      ],
+      "@app/module-options": [
+        "libs/module-options/src"
+      ],
+      "@app/module-options/*": [
+        "libs/module-options/src/*"
       ]
     }
   }
