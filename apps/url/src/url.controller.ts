@@ -64,6 +64,7 @@ export class UrlController {
           where: { apiKey },
           select: { id: true },
         }),
+        // consider pagination here so as to not load too many records in memory
         this.prisma.link.findMany({
           where: { originalUrl },
           select: { shortUrlCode: true, apiKey: true },
@@ -92,7 +93,7 @@ export class UrlController {
        * ~139 years or 1 Billion ids, in order to have a 1% probability of at least one collision.
        * source: https://zelark.github.io/nano-id-cc/
        *
-       * if short url code already exists but for a different user, then we don't want to generate a new code
+       * if short url code already exists for a different user, don't generate a new code
        * create a new record with the same short url code for the current user
        */
       let existingShortUrlCode: string | undefined;

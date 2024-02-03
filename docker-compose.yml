@@ -20,58 +20,59 @@ services:
       volumes:
         - "mongo_data:/data/db"
         - "mongo_config:/data/configdb"
-      # profiles:
-      #   - infra
 
   redis:
       image: redis:6.2-alpine
       restart: always
       ports:
         - '6379:6379'
-      # profiles:
-      #   - infra
 
-  nginx-server:
+  nginx-lb-apiGateway:
       image: nginx:1.13
+      container_name: nginx-lb-apiGateway
       ports: 
           - "8080:80"
       volumes: 
-          - './nginx/src/nginx.conf:/etc/nginx/nginx.conf'
+          - './nginx-lb-apiGateway/src/nginx.conf:/etc/nginx/nginx.conf'
       depends_on:
           - api-gateway
+
+  nginx-lb-grpc:
+      image: nginx:1.13
+      container_name: nginx-lb-grpc
+      ports: 
+          - "8081:80"
+      volumes: 
+          - './nginx-lb-grpc/src/nginx.conf:/etc/nginx/nginx.conf'
+      depends_on:
+          - url
 
   api-gateway:
     build:
       context: .
       dockerfile: ./apps/api-gateway/Dockerfile
-    # ports:
-    #   - 3000:3000
-    # container_name: api-gateway-container
     restart: always
     env_file:
       - .env
     environment:
       - "REDIS_URL=redis://host.docker.internal:6379"
-      - "GRPC_SERVER_URL=url-container:5000"
+      - "GRPC_SERVER_URL=host.docker.internal:8081"
     depends_on:
       - mongo
       - redis
+      - nginx-lb-grpc
 
   url:
     build:
       context: .
       dockerfile: ./apps/url/Dockerfile
-    ports:
-      - 5000:5000
-      - 3001:3001
-    container_name: url-container
     restart: always
     env_file:
       - .env
     environment:
       - "MONGO_DB_URL=mongodb://host.docker.internal:27017/url?replicaSet=rs0"
       - "REDIS_URL=redis://host.docker.internal:6379"
-      - "GRPC_SERVER_URL=url-container:5000"
+      - "GRPC_SERVER_URL=url:5000"
     depends_on:
       - mongo
       - redis
