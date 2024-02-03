@@ -59,14 +59,14 @@ export class UrlController {
       const { apiKey, url: originalUrl } = urlDetails;
       const baseUrl = this.configService.get('URL_SERVICE_HTTP_HOST');
 
-      const [user, link] = await Promise.all([
+      const [user, links] = await Promise.all([
         this.prisma.user.findFirst({
           where: { apiKey },
           select: { id: true },
         }),
-        this.prisma.link.findFirst({
+        this.prisma.link.findMany({
           where: { originalUrl },
-          select: { shortUrlCode: true },
+          select: { shortUrlCode: true, apiKey: true },
         }),
       ]);
 
@@ -78,19 +78,28 @@ export class UrlController {
         };
       }
 
-      if (link) {
+      // short url already exists for this user
+      const linkCurrentUser = links.find((link) => link.apiKey === apiKey);
+      if (linkCurrentUser) {
         return {
           originalUrl,
-          shortenedUrl: `${baseUrl}/${link.shortUrlCode}`,
+          shortenedUrl: `${baseUrl}/${linkCurrentUser.shortUrlCode}`,
         };
       }
 
       /**
        * At a rate of generation of 1000 short url codes per hr, nanoid(11) will take
        * ~139 years or 1 Billion ids, in order to have a 1% probability of at least one collision.
-       * src: https://zelark.github.io/nano-id-cc/
+       * source: https://zelark.github.io/nano-id-cc/
+       *
+       * if short url code already exists but for a different user, then we don't want to generate a new code
+       * create a new record with the same short url code for the current user
        */
-      const shortUrlCode = nanoid(11);
+      let existingShortUrlCode: string | undefined;
+      // take top one, all will have the same code
+      if (links.length > 0) existingShortUrlCode = links[0]?.shortUrlCode; 
+
+      const shortUrlCode = existingShortUrlCode ?? nanoid(11);
 
       await this.prisma.link.create({
         data: {

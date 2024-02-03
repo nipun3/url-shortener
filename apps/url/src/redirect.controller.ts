@@ -12,9 +12,7 @@ export class RedirectController {
     @Res() res: Response,
     @Param('shortUrlCode') shortUrlCode: string,
   ): Promise<void> {
-    // TODO: call url service to get the long url, the url service should first check in cache, if it exists then return
-    // else get from db and put it in cache. if doesn't exist in db as well then throw relevant error from here
-
+    // TODO: add caching here with ttl
     const link = await this.prisma.link.findFirst({
       where: { shortUrlCode },
       select: { originalUrl: true },

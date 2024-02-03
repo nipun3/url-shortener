@@ -14,10 +14,10 @@ import {
 export class ApiGatewayService implements OnModuleInit {
   private urlService: UrlService;
 
-  constructor(@Inject('LINK_PACKAGE') private client: ClientGrpc) {}
+  constructor(@Inject('GRPC_CLIENT') private grpcClient: ClientGrpc) {}
 
   onModuleInit() {
-    this.urlService = this.client.getService<UrlService>('UrlService');
+    this.urlService = this.grpcClient.getService<UrlService>('UrlService');
   }
 
   async registerUser(

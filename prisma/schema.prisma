@@ -20,11 +20,12 @@ model User {
 
 model Link {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  originalUrl  String   @unique
+  originalUrl  String
   shortUrlCode String
   apiKey       String
   createdAt    DateTime @default(now())
   expiryAt     DateTime
 
   @@index(shortUrlCode)
+  @@unique([originalUrl, apiKey])
 }

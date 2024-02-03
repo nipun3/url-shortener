@@ -18,7 +18,7 @@ import {
   imports: [
     ClientsModule.registerAsync(
       GrpcClientModuleOptions(
-        'LINK_PACKAGE',
+        'GRPC_CLIENT',
         'urlService',
         join(__dirname, '../url/proto/url.proto'),
       ),
