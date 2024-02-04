@@ -11,5 +11,4 @@ COPY ./apps/url/src .
 COPY ./apps/url/src/proto/url.proto ./dist/proto/
 COPY ./libs ./libs
 
-
 CMD [ "yarn", "start" ]

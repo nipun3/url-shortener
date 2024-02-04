@@ -15,7 +15,6 @@ import {
 
 import { PrismaService } from './prisma.service';
 
-// TODO: add doc strings everywhere
 @Injectable()
 export class UrlService {
   constructor(
@@ -23,6 +22,12 @@ export class UrlService {
     private configService: ConfigService,
   ) {}
 
+  /**
+   * registers a user and returns an api key
+   *
+   * @param userDetails - user details
+   * @returns {Promise<RegisterUserResponse>}
+   */
   async registerUser(
     userDetails: RegisterUserDetails,
   ): Promise<RegisterUserResponse> {
@@ -54,10 +59,16 @@ export class UrlService {
         email,
       };
     } catch (error) {
-      log('urlController#registerUser unkwown error occurred', error);
+      log('urlService#registerUser unkwown error occurred', error);
     }
   }
 
+  /**
+   * accepts a long url, emailId & api key, returns a short url
+   *
+   * @param urlDetails - url details
+   * @returns {Promise<ShortenUrlResponse>}
+   */
   async shortenUrl(urlDetails: UrlDetails): Promise<ShortenUrlResponse> {
     try {
       const { apiKey, url: originalUrl, email } = urlDetails;
@@ -117,19 +128,29 @@ export class UrlService {
         shortenedUrl: `${baseUrl}/${shortUrlCode}`,
       };
     } catch (error) {
-      log('urlController#shortenUrl unkwown error occurred', error);
+      log('urlService#shortenUrl unkwown error occurred', error);
     }
   }
 
+  /**
+   * fetches the orginal url
+   *
+   * @param shortUrlDetails - short url details
+   * @returns {Promise<OriginalUrlResponse>}
+   */
   async getOriginalUrl(
     shortUrlDetails: ShortUrlDetails,
   ): Promise<OriginalUrlResponse> {
-    const { shortUrlCode } = shortUrlDetails;
-    const link = await this.prisma.link.findFirst({
-      where: { shortUrlCode },
-      select: { originalUrl: true },
-    });
+    try {
+      const { shortUrlCode } = shortUrlDetails;
+      const link = await this.prisma.link.findFirst({
+        where: { shortUrlCode },
+        select: { originalUrl: true },
+      });
 
-    return link;
+      return link;
+    } catch (error) {
+      log('urlService#getOriginalUrl unkwown error occurred', error);
+    }
   }
 }

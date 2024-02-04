@@ -5,6 +5,14 @@ import {
   Transport,
 } from '@nestjs/microservices';
 
+/**
+ * returns grpc module options
+ * 
+ * @param configService - config service
+ * @param packageName - grpc service proto package name
+ * @param protoPath - proto file path
+ * @returns {GrpcOptions}
+ */
 export const getGrpcOptions = (
   configService: ConfigService,
   packageName: string,
@@ -21,6 +29,14 @@ export const getGrpcOptions = (
   },
 });
 
+/**
+ * return client grpc options
+ * 
+ * @param name - provider name
+ * @param packageName - grpc service proto package name
+ * @param protoPath - proto file path
+ * @returns {ClientsModuleAsyncOptions}
+ */
 export const GrpcClientModuleOptions = (
   name: string,
   packageName: string,
