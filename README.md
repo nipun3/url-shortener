@@ -4,6 +4,8 @@
 
 Backend for a url shortening service built on NestJS. Uses *MongoDb* as the database, *Redis* for caching, *Prisma* for ORM & *GRPC* for inter-microservice communication.
 
+System Design Document: 
+
   
 
 ## Installation
@@ -28,10 +30,11 @@ $  yarn  install
 $ docker compose up --build --scale api-gateway=4 --scale url=4
 
 # wait for all the images to build & the services to boot up
-# pushes mongo db schema changes from .prisma file to the db server
-# needs be done once, the first time
+
+# pushes mongo db schema changes from .prisma file to the db server (needs be done once, the first time)
 $ npx prisma db push
 ```
+
 
 ## Curl Requests
 
