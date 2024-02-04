@@ -1,17 +1,20 @@
 import { join } from 'path';
 
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions } from '@nestjs/microservices';
 
-import { UrlModule } from './url.module';
 import { getGrpcOptions } from '@app/module-options';
-import { ConfigService } from '@nestjs/config';
+
+import { UrlModule } from './url.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(UrlModule);
-  const configService: ConfigService = app.get<ConfigService>(ConfigService);
+  const appContext = await NestFactory.createApplicationContext(UrlModule);
+  const configService: ConfigService =
+    appContext.get<ConfigService>(ConfigService);
 
-  app.connectMicroservice<MicroserviceOptions>(
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    UrlModule,
     getGrpcOptions(
       configService,
       'urlService',
@@ -19,7 +22,6 @@ async function bootstrap() {
     ),
   );
 
-  await app.startAllMicroservices();
-  await app.listen(3001);
+  await app.listen();
 }
 bootstrap();

@@ -6,13 +6,14 @@ import { ClientsModule } from '@nestjs/microservices';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { RedisModule } from '@nestjs-modules/ioredis';
 
-import { ApiGatewayController } from './api-gateway.controller';
-import { ApiGatewayService } from './api-gateway.service';
 import {
   GrpcClientModuleOptions,
   RedisModuleOptions,
   ThrottlerModuleOptions,
 } from '@app/module-options';
+
+import { ApiGatewayController } from './api-gateway.controller';
+import { ApiGatewayService } from './api-gateway.service';
 
 @Module({
   imports: [

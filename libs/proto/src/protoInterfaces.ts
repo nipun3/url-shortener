@@ -6,11 +6,13 @@ export interface RegisterUserDetails {
 export interface RegisterUserResponse {
   email: string;
   apiKey: string;
+  message?: string;
 }
 
 export interface UrlDetails {
   url: string;
   apiKey: string;
+  email: string
 }
 export interface ShortenUrlResponse {
   originalUrl: string;

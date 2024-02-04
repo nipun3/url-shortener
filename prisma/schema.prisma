@@ -24,7 +24,6 @@ model Link {
   shortUrlCode String
   apiKey       String
   createdAt    DateTime @default(now())
-  expiryAt     DateTime
 
   @@index(shortUrlCode)
   @@unique([originalUrl, apiKey])

@@ -1,11 +1,11 @@
-import { RedisModuleAsyncOptions } from "@nestjs-modules/ioredis";
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RedisModuleAsyncOptions } from '@nestjs-modules/ioredis';
 
 export const RedisModuleOptions: RedisModuleAsyncOptions = {
-    imports: [ConfigModule],
-    useFactory: (configService: ConfigService) => ({
-      type: 'single',
-      url: configService.get('REDIS_URL'),
-    }),
-    inject: [ConfigService],
-  }
+  imports: [ConfigModule],
+  useFactory: (configService: ConfigService) => ({
+    type: 'single',
+    url: configService.get('REDIS_URL'),
+  }),
+  inject: [ConfigService],
+};

@@ -11,6 +11,7 @@ export class RegisterUserDTO {
 export class RegisterUserResponse {
   email: string;
   apiKey: string;
+  message?: string;
 }
 
 export class ShortenUrlDTO {
@@ -24,6 +25,9 @@ export class ShortenUrlDTO {
   @IsNotEmpty()
   @IsUUID()
   apiKey: string;
+
+  @IsEmail({}, { message: 'Invalid email format.' })
+  email: string;
 }
 
 export class ShortenUrlResponse {

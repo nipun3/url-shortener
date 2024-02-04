@@ -15,11 +15,13 @@ message RegisterUserDetails {
 message RegisterUserResponse {
     string email = 1;
     string apiKey = 2;
+    optional string message = 3;
 }
 
 message UrlDetails {
     string url = 1;
     string apiKey = 2;
+    string email = 3;
 }
 
 message ShortenUrlResponse {
