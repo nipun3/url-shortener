@@ -18,12 +18,12 @@ export class ShortenUrlDTO {
   @IsNotEmpty()
   @IsUrl(
     { require_protocol: true },
-    { message: 'Invalid url format! Make sure url has a valid protocol.' },
+    { message: 'Invalid url format! Make sure url has a valid protocol & domain length.' },
   )
   url: string;
 
   @IsNotEmpty()
-  @IsUUID()
+  @IsUUID('4', { message: 'Invalid api key.' })
   apiKey: string;
 
   @IsEmail({}, { message: 'Invalid email format.' })
