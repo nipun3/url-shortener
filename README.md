@@ -4,7 +4,7 @@
 
 Backend for a url shortening service built on NestJS. Uses *MongoDb* as the database, *Redis* for caching, *Prisma* for ORM & *GRPC* for inter-microservice communication.
 
-System Design Document: 
+System Design Document can be found [here.](https://flashy-bugle-5a4.notion.site/URL-Shortening-Service-Backend-b9115b28f56f4508afff840dfa283264?pvs=4)
 
   
 
