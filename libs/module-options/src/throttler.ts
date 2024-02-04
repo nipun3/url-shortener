@@ -7,7 +7,7 @@ export const ThrottlerModuleOptions: ThrottlerAsyncOptions = {
   useFactory: (configService: ConfigService) => ({
     // TODO: configure below via env variables
     throttlers: [{ limit: 5, ttl: seconds(10) }],
-    storage: new ThrottlerStorageRedisService(configService.get('REDIS_URL')),
+    storage: new ThrottlerStorageRedisService(configService.get('REDIS_HOST')),
   }),
   inject: [ConfigService],
 };

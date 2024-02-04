@@ -55,7 +55,7 @@ services:
     env_file:
       - .env
     environment:
-      - "REDIS_URL=redis://host.docker.internal:6379"
+      - "REDIS_HOST=redis://host.docker.internal:6379"
       - "GRPC_SERVER_URL=host.docker.internal:8081"
     depends_on:
       - mongo
@@ -71,7 +71,7 @@ services:
       - .env
     environment:
       - "MONGO_DB_URL=mongodb://host.docker.internal:27017/url?replicaSet=rs0"
-      - "REDIS_URL=redis://host.docker.internal:6379"
+      - "REDIS_HOST=redis://host.docker.internal:6379"
       - "GRPC_SERVER_URL=url:5000"
     depends_on:
       - mongo

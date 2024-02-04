@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export interface RegisterUserDetails {
   name: string;
   email: string;
@@ -12,7 +14,7 @@ export interface RegisterUserResponse {
 export interface UrlDetails {
   url: string;
   apiKey: string;
-  email: string
+  email: string;
 }
 export interface ShortenUrlResponse {
   originalUrl: string;
@@ -20,7 +22,18 @@ export interface ShortenUrlResponse {
   error?: string;
 }
 
+export interface ShortUrlDetails {
+  shortUrlCode: string;
+}
+
+export interface OriginalUrlResponse {
+  originalUrl: string;
+}
+
 export interface UrlService {
   registerUser(userDetails: RegisterUserDetails): Promise<RegisterUserResponse>;
-  shortenUrl(urlDetails): Promise<ShortenUrlResponse>;
+  shortenUrl(urlDetails: UrlDetails): Promise<ShortenUrlResponse>;
+  getOriginalUrl(
+    shortUrlDetails: ShortUrlDetails,
+  ): Observable<OriginalUrlResponse>;
 }

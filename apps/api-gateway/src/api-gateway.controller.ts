@@ -1,6 +1,17 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { InjectRedis } from '@nestjs-modules/ioredis';
+import { Response } from 'express';
 import Redis from 'ioredis';
+import { firstValueFrom } from 'rxjs';
 
 import {
   RegisterUserDTO,
@@ -11,14 +22,14 @@ import {
 import { ApiGatewayService } from './api-gateway.service';
 import { UserThrottlerGuard } from './api-key-throttler-guard';
 
-@Controller('url-shortener')
+@Controller()
 export class ApiGatewayController {
   constructor(
     private readonly apiGatewayService: ApiGatewayService,
     @InjectRedis() private readonly redis: Redis,
   ) {}
 
-  @Post('registerUser')
+  @Post('url-shortener/registerUser')
   async registerUser(
     @Body() dto: RegisterUserDTO,
   ): Promise<RegisterUserResponse> {
@@ -26,9 +37,26 @@ export class ApiGatewayController {
   }
 
   @UseGuards(UserThrottlerGuard)
-  @Post('shortenUrl')
+  @Post('url-shortener/shortenUrl')
   async shortenUrl(@Body() dto: ShortenUrlDTO): Promise<ShortenUrlResponse> {
     await this.redis.set('test', 1);
     return this.apiGatewayService.shortenUrl(dto);
+  }
+
+  @Get(':shortUrlCode')
+  async redirect(
+    @Res() res: Response,
+    @Param('shortUrlCode') shortUrlCode: string,
+  ): Promise<void> {
+    // TODO: add caching here with ttl
+    const link = await firstValueFrom(
+      this.apiGatewayService.getOriginalUrl({ shortUrlCode }),
+    );
+
+    if (link?.originalUrl) {
+      return res.redirect(HttpStatus.TEMPORARY_REDIRECT, link.originalUrl);
+    }
+
+    res.sendStatus(HttpStatus.NOT_FOUND);
   }
 }

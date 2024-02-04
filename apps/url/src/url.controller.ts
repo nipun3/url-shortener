@@ -1,9 +1,12 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 
+import { log } from '@app/logger';
 import {
+  OriginalUrlResponse,
   RegisterUserDetails,
   RegisterUserResponse,
+  ShortUrlDetails,
   ShortenUrlResponse,
   UrlDetails,
 } from '@app/proto';
@@ -19,6 +22,7 @@ export class UrlController {
   async registerUser(
     userDetails: RegisterUserDetails,
   ): Promise<RegisterUserResponse> {
+    log('USER REGISTER ENDPOINT!');
     return this.urlService.registerUser(userDetails);
   }
 
@@ -30,5 +34,13 @@ export class UrlController {
   @GrpcMethod('UrlService', 'ShortenUrl')
   async shortenUrl(urlDetails: UrlDetails): Promise<ShortenUrlResponse> {
     return this.urlService.shortenUrl(urlDetails);
+  }
+
+  @GrpcMethod('UrlService', 'GetOriginalUrl')
+  async getOriginalUrl(
+    shortUrlDetails: ShortUrlDetails,
+  ): Promise<OriginalUrlResponse> {
+    log('USER REGISTER ENDPOINT11!');
+    return this.urlService.getOriginalUrl(shortUrlDetails);
   }
 }

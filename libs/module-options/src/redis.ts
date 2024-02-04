@@ -5,7 +5,7 @@ export const RedisModuleOptions: RedisModuleAsyncOptions = {
   imports: [ConfigModule],
   useFactory: (configService: ConfigService) => ({
     type: 'single',
-    url: configService.get('REDIS_URL'),
+    url: configService.get('REDIS_HOST'),
   }),
   inject: [ConfigService],
 };

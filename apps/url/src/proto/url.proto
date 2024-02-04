@@ -5,6 +5,7 @@ package urlService;
 service UrlService {
     rpc RegisterUser(RegisterUserDetails) returns (RegisterUserResponse) {}
     rpc ShortenUrl(UrlDetails) returns (ShortenUrlResponse) {}
+    rpc GetOriginalUrl(ShortUrlDetails) returns (OriginalUrlResponse) {}
 }
 
 message RegisterUserDetails {
@@ -28,4 +29,12 @@ message ShortenUrlResponse {
     string originalUrl = 1;
     string shortenedUrl = 2;
     optional string error = 3;
+}
+
+message ShortUrlDetails {
+    string shortUrlCode = 1;
+}
+
+message OriginalUrlResponse {
+    string originalUrl = 1;
 }

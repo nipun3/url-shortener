@@ -1,5 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 
 import {
   RegisterUserDetails,
@@ -7,6 +8,8 @@ import {
   RegisterUserResponse,
   UrlDetails,
   ShortenUrlResponse,
+  ShortUrlDetails,
+  OriginalUrlResponse,
 } from '@app/proto';
 
 // TODO: add doc strings everywhere
@@ -23,14 +26,17 @@ export class ApiGatewayService implements OnModuleInit {
   async registerUser(
     userDetails: RegisterUserDetails,
   ): Promise<RegisterUserResponse> {
-    return this.urlService.registerUser(userDetails);
+    const res = await this.urlService.registerUser(userDetails);
+    return res;
   }
 
   async shortenUrl(urlDetails: UrlDetails): Promise<ShortenUrlResponse> {
-    try {
-      return this.urlService.shortenUrl(urlDetails);
-    } catch (error) {
-      console.log(error);
-    }
+    return this.urlService.shortenUrl(urlDetails);
+  }
+
+  getOriginalUrl(
+    shortUrlDetails: ShortUrlDetails,
+  ): Observable<OriginalUrlResponse> {
+    return this.urlService.getOriginalUrl(shortUrlDetails);
   }
 }

@@ -5,8 +5,10 @@ import { v4 } from 'uuid';
 
 import { log } from '@app/logger';
 import {
+  OriginalUrlResponse,
   RegisterUserDetails,
   RegisterUserResponse,
+  ShortUrlDetails,
   ShortenUrlResponse,
   UrlDetails,
 } from '@app/proto';
@@ -31,7 +33,12 @@ export class UrlService {
         where: { email },
       });
 
-      if (user) return { apiKey: user.apiKey, email, message: 'User already registered!' };
+      if (user)
+        return {
+          apiKey: user.apiKey,
+          email,
+          message: 'User already registered!',
+        };
 
       const apiKey = v4();
       await this.prisma.user.create({
@@ -54,7 +61,7 @@ export class UrlService {
   async shortenUrl(urlDetails: UrlDetails): Promise<ShortenUrlResponse> {
     try {
       const { apiKey, url: originalUrl, email } = urlDetails;
-      const baseUrl = this.configService.get('URL_SERVICE_HTTP_HOST');
+      const baseUrl = this.configService.get('API_GATEWAY_LB');
 
       const [user, links] = await Promise.all([
         this.prisma.user.findFirst({
@@ -112,5 +119,17 @@ export class UrlService {
     } catch (error) {
       log('urlController#shortenUrl unkwown error occurred', error);
     }
+  }
+
+  async getOriginalUrl(
+    shortUrlDetails: ShortUrlDetails,
+  ): Promise<OriginalUrlResponse> {
+    const { shortUrlCode } = shortUrlDetails;
+    const link = await this.prisma.link.findFirst({
+      where: { shortUrlCode },
+      select: { originalUrl: true },
+    });
+
+    return link;
   }
 }
